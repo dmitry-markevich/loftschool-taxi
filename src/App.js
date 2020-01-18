@@ -1,24 +1,46 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './app.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+import LoginPage from './pages/login';
+import RegisterPage from './pages/register';
+import MapPage from './pages/map';
+import ProfilePage from './pages/profile';
+
+const pages = ['login', 'register', 'map', 'profile'];
+
+class App extends React.Component {
+  state = {
+    page: 'login'
+  };
+
+  setPage = page => {
+    this.setState({
+      page
+    });
+  };
+
+  render = () => (
+    <div className="tx-app">
+      <header>
+        <ul className="tx-nav">
+          {pages.map(page => (
+            <li onClick={() => this.setPage(page)} key={page}>
+              {page}
+            </li>
+          ))}
+        </ul>
       </header>
+
+      <section className="tx-content">
+        {
+          {
+            login: <LoginPage />,
+            register: <RegisterPage />,
+            map: <MapPage />,
+            profile: <ProfilePage />
+          }[this.state.page]
+        }
+      </section>
     </div>
   );
 }

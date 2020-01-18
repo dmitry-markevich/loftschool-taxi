@@ -1,12 +1,12 @@
 import React from 'react';
 import './app.css';
 
+import pages from './pages';
+
 import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
 import MapPage from './pages/map';
 import ProfilePage from './pages/profile';
-
-const pages = ['login', 'register', 'map', 'profile'];
 
 class App extends React.Component {
   state = {
@@ -24,8 +24,8 @@ class App extends React.Component {
       <header>
         <ul className="tx-nav">
           {pages.map(page => (
-            <li onClick={() => this.setPage(page)} key={page}>
-              {page}
+            <li onClick={() => this.setPage(page.url)} key={page.url}>
+              {page.title}
             </li>
           ))}
         </ul>
@@ -34,8 +34,8 @@ class App extends React.Component {
       <section className="tx-content">
         {
           {
-            login: <LoginPage />,
-            register: <RegisterPage />,
+            login: <LoginPage goToPage={this.setPage} />,
+            register: <RegisterPage goToPage={this.setPage} />,
             map: <MapPage />,
             profile: <ProfilePage />
           }[this.state.page]

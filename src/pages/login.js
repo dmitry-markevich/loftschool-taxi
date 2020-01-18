@@ -12,6 +12,10 @@ class LoginPage extends React.Component {
         password: this.state.passwordInput
       })
     });
+
+    if (this.state.loginInput && this.state.passwordInput) {
+      this.props.goToPage('map');
+    }
   };
 
   handleChange = e => {

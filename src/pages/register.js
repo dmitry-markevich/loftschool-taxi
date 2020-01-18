@@ -19,6 +19,15 @@ class RegisterPage extends React.Component {
         surname: this.state.surnameInput
       })
     });
+
+    if (
+      this.state.loginInput &&
+      this.state.passwordInput &&
+      this.state.nameInput &&
+      this.state.surnameInput
+    ) {
+      this.props.goToPage('map');
+    }
   };
 
   handleChange = e => {

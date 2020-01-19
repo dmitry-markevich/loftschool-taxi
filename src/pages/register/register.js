@@ -11,21 +11,18 @@ class RegisterPage extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
+    const { loginInput, passwordInput, nameInput, surnameInput } = this.state;
+
     this.setState({
       msg: JSON.stringify({
-        login: this.state.loginInput,
-        password: this.state.passwordInput,
-        name: this.state.nameInput,
-        surname: this.state.surnameInput
+        login: loginInput,
+        password: passwordInput,
+        name: nameInput,
+        surname: surnameInput
       })
     });
 
-    if (
-      this.state.loginInput &&
-      this.state.passwordInput &&
-      this.state.nameInput &&
-      this.state.surnameInput
-    ) {
+    if (loginInput && passwordInput && nameInput && surnameInput) {
       this.props.goToPage('map');
     }
   };

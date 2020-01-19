@@ -6,14 +6,16 @@ class LoginPage extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
+    const { loginInput, passwordInput } = this.state;
+
     this.setState({
       msg: JSON.stringify({
-        login: this.state.loginInput,
-        password: this.state.passwordInput
+        login: loginInput,
+        password: passwordInput
       })
     });
 
-    if (this.state.loginInput && this.state.passwordInput) {
+    if (loginInput && passwordInput) {
       this.props.goToPage('map');
     }
   };

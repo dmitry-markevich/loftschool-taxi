@@ -1,12 +1,12 @@
 import React from 'react';
 import './app.css';
 
-import pages from './pages';
+import pages from './pages/data';
 
-import LoginPage from './pages/login';
-import RegisterPage from './pages/register';
-import MapPage from './pages/map';
-import ProfilePage from './pages/profile';
+import LoginPage from './pages/login/login';
+import RegisterPage from './pages/register/register';
+import MapPage from './pages/map/map';
+import ProfilePage from './pages/profile/profile';
 
 class App extends React.Component {
   state = {

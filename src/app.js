@@ -1,48 +1,30 @@
-import React from 'react';
-import './app.css';
-
-import pages from './pages/data';
-
+import React, { useState } from 'react';
+import './css/app.css';
+import { AuthProvider } from './blocks/auth/auth';
+import Header from './blocks/header/header';
 import LoginPage from './pages/login/login';
 import RegisterPage from './pages/register/register';
 import MapPage from './pages/map/map';
 import ProfilePage from './pages/profile/profile';
 
-class App extends React.Component {
-  state = {
-    page: 'login'
-  };
+const App = () => {
+  const [page, setPage] = useState('login');
 
-  setPage = page => {
-    this.setState({
-      page
-    });
-  };
-
-  render = () => (
-    <div className="tx-app">
-      <header>
-        <ul className="tx-nav">
-          {pages.map(page => (
-            <li onClick={() => this.setPage(page.url)} key={page.url}>
-              {page.title}
-            </li>
-          ))}
-        </ul>
-      </header>
-
-      <section className="tx-content">
+  return (
+    <AuthProvider>
+      <div className="tx-app">
+        <Header setPage={setPage} />
         {
           {
-            login: <LoginPage goToPage={this.setPage} />,
-            register: <RegisterPage goToPage={this.setPage} />,
+            login: <LoginPage setPage={setPage} />,
+            register: <RegisterPage setPage={setPage} />,
             map: <MapPage />,
             profile: <ProfilePage />
-          }[this.state.page]
+          }[page]
         }
-      </section>
-    </div>
+      </div>
+    </AuthProvider>
   );
-}
+};
 
 export default App;

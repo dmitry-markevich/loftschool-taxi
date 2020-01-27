@@ -1,4 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Container from '@material-ui/core/container';
+import Grid from '@material-ui/core/grid';
+import TextField from '@material-ui/core/textfield';
+import Button from '@material-ui/core/button';
+import { Logo } from 'loft-taxi-mui-theme';
 
 class RegisterPage extends React.Component {
   state = {
@@ -21,10 +27,6 @@ class RegisterPage extends React.Component {
         surname: surnameInput
       })
     });
-
-    if (loginInput && passwordInput && nameInput && surnameInput) {
-      this.props.goToPage('map');
-    }
   };
 
   handleChange = e => {
@@ -35,61 +37,83 @@ class RegisterPage extends React.Component {
 
   render = () => {
     const { loginInput, passwordInput, nameInput, surnameInput } = this.state;
+    const { setPage } = this.props;
 
     return (
-      <div className="tx-page tx-page-register">
-        <h1>Register Page</h1>
-
-        <form onSubmit={this.handleSubmit} className="tx-form">
-          <div>
-            <label>Имя: </label>
-            <input
-              type="text"
-              name="nameInput"
-              value={nameInput}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div>
-            <label>Фамилия: </label>
-            <input
-              type="text"
-              name="surnameInput"
-              value={surnameInput}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div>
-            <label>Логин: </label>
-            <input
-              type="email"
-              name="loginInput"
-              value={loginInput}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div>
-            <label>Пароль: </label>
-            <input
-              type="password"
-              name="passwordInput"
-              value={passwordInput}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div>
-            <input type="submit" value="Регистрация" />
-          </div>
-        </form>
-
-        <div className="tx-msg">{this.state.msg}</div>
-      </div>
+      <section className="tx-page tx-page-login">
+        <div className="tx-page-content">
+          <Container maxWidth="md">
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <div className="tx-logo-wr">
+                  <Logo />
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <div className="tx-box">
+                  <h2>Регистрация</h2>
+                  <p>
+                    Уже зарегистрирован?{' '}
+                    <span className="tx-link" onClick={() => setPage('login')}>
+                      Войти
+                    </span>
+                  </p>
+                  <form onSubmit={this.handleSubmit} className="tx-form">
+                    <div className="tx-line tx-single">
+                      <TextField
+                        label="Электронная почта"
+                        type="email"
+                        name="loginInput"
+                        value={loginInput}
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="tx-line">
+                      <TextField
+                        label="Имя"
+                        type="text"
+                        name="nameInput"
+                        value={nameInput}
+                        onChange={this.handleChange}
+                        required
+                      />
+                      <TextField
+                        label="Фамилия"
+                        type="text"
+                        name="surnameInput"
+                        value={surnameInput}
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="tx-line tx-single">
+                      <TextField
+                        label="Пароль"
+                        type="password"
+                        name="passwordInput"
+                        value={passwordInput}
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="tx-line ar">
+                      <Button type="submit">Зарегистрироваться</Button>
+                    </div>
+                  </form>
+                  <div className="tx-msg">{this.state.msg}</div>
+                </div>
+              </Grid>
+            </Grid>
+          </Container>
+        </div>
+      </section>
     );
   };
 }
+
+RegisterPage.propTypes = {
+  setPage: PropTypes.func.isRequired
+};
 
 export default RegisterPage;

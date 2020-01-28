@@ -4,15 +4,15 @@ const { Provider, Consumer } = React.createContext();
 const Auth = props => {
   const [isLoggedIn, setLoggedIn] = useState(false);
 
-  function login(email, password) {
+  const login = (email, password) => {
     console.log('loggedIn', email, password);
     setLoggedIn(true);
-  }
+  };
 
-  function logout() {
+  const logout = () => {
     console.log('loggedOut');
     setLoggedIn(false);
-  }
+  };
 
   return (
     <Provider

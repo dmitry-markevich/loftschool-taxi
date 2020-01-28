@@ -14,9 +14,10 @@ class LoginPage extends React.Component {
     e.preventDefault();
 
     const { loginInput, passwordInput } = this.state;
+    const { setPage } = this.props;
 
     if (loginInput && passwordInput) {
-      this.props.setPage('map');
+      setPage('map');
     }
   };
 

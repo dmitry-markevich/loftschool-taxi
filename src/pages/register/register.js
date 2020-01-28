@@ -18,6 +18,7 @@ class RegisterPage extends React.Component {
     e.preventDefault();
 
     const { loginInput, passwordInput, nameInput, surnameInput } = this.state;
+    const { setPage } = this.props;
 
     this.setState({
       msg: JSON.stringify({
@@ -27,6 +28,10 @@ class RegisterPage extends React.Component {
         surname: surnameInput
       })
     });
+
+    if (loginInput && passwordInput && nameInput && surnameInput) {
+      setPage('login');
+    }
   };
 
   handleChange = e => {

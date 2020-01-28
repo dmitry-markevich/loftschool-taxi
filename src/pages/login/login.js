@@ -1,4 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { AuthConsumer } from '../../blocks/auth/auth';
+import Container from '@material-ui/core/container';
+import Grid from '@material-ui/core/grid';
+import TextField from '@material-ui/core/textfield';
+import Button from '@material-ui/core/button';
+import { Logo } from 'loft-taxi-mui-theme';
 
 class LoginPage extends React.Component {
   state = { loginInput: '', passwordInput: '' };
@@ -8,15 +15,8 @@ class LoginPage extends React.Component {
 
     const { loginInput, passwordInput } = this.state;
 
-    this.setState({
-      msg: JSON.stringify({
-        login: loginInput,
-        password: passwordInput
-      })
-    });
-
     if (loginInput && passwordInput) {
-      this.props.goToPage('map');
+      this.props.setPage('map');
     }
   };
 
@@ -28,41 +28,80 @@ class LoginPage extends React.Component {
 
   render = () => {
     const { loginInput, passwordInput } = this.state;
+    const { setPage } = this.props;
 
     return (
-      <div className="tx-page tx-page-login">
-        <h1>Login Page</h1>
-
-        <form onSubmit={this.handleSubmit} className="tx-form">
-          <div>
-            <label>Логин: </label>
-            <input
-              type="email"
-              name="loginInput"
-              value={loginInput}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div>
-            <label>Пароль: </label>
-            <input
-              type="password"
-              name="passwordInput"
-              value={passwordInput}
-              onChange={this.handleChange}
-            />
-          </div>
-
-          <div>
-            <input type="submit" value="Войти" />
-          </div>
-        </form>
-
-        <div className="tx-msg">{this.state.msg}</div>
-      </div>
+      <section className="tx-page tx-page-login">
+        <div className="tx-page-content">
+          <Container maxWidth="md">
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <div className="tx-logo-wr">
+                  <Logo />
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <div className="tx-box">
+                  <h2>Войти</h2>
+                  <p>
+                    Новый пользователь?{' '}
+                    <span
+                      className="tx-link"
+                      onClick={() => setPage('register')}
+                    >
+                      Зарегистрируйтесь
+                    </span>
+                  </p>
+                  <form onSubmit={this.handleSubmit} className="tx-form">
+                    <div className="tx-line tx-single">
+                      <TextField
+                        label="Логин"
+                        type="email"
+                        name="loginInput"
+                        value={loginInput}
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="tx-line tx-single">
+                      <TextField
+                        label="Пароль"
+                        type="password"
+                        name="passwordInput"
+                        value={passwordInput}
+                        onChange={this.handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="tx-line ar">
+                      <AuthConsumer>
+                        {({ login }) => (
+                          <Button
+                            type="submit"
+                            onClick={() => {
+                              loginInput &&
+                                passwordInput &&
+                                login(loginInput, passwordInput);
+                            }}
+                          >
+                            Войти
+                          </Button>
+                        )}
+                      </AuthConsumer>
+                    </div>
+                  </form>
+                </div>
+              </Grid>
+            </Grid>
+          </Container>
+        </div>
+      </section>
     );
   };
 }
+
+LoginPage.propTypes = {
+  setPage: PropTypes.func.isRequired
+};
 
 export default LoginPage;

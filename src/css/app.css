@@ -1,0 +1,114 @@
+/**/
+
+.ar {
+  text-align: right;
+}
+
+.ac {
+  text-align: center;
+}
+
+/* App */
+
+.tx-app {
+  width: 100vw;
+  height: 100vh;
+  background: url('../img/bg.jpg') center center no-repeat;
+  background-size: cover;
+}
+
+/* Header */
+
+header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: #fff;
+}
+
+header .tx-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 65px;
+}
+
+header .tx-menu {
+  display: flex;
+  align-items: center;
+}
+
+header .tx-menu button {
+  margin-right: 10px;
+}
+
+header .tx-menu button:last-child {
+  margin-right: 0;
+}
+
+/* Page */
+
+.tx-page {
+  width: 100%;
+  height: 100%;
+}
+
+.tx-page-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Box */
+
+.tx-box {
+  background: #fff;
+  border-radius: 3px;
+  padding: 35px 50px;
+}
+
+/* Form */
+
+.tx-form .tx-line {
+  margin-bottom: 1rem;
+}
+
+.tx-form .tx-single [class*='MuiTextField'] {
+  width: 100%;
+}
+
+.tx-form button[type='submit'] {
+  background: #ffc617;
+}
+
+/* Logo */
+
+.tx-logo-wr {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+}
+
+/* Map */
+
+.tx-map-container {
+  position: absolute;
+  left: 0;
+  top: 65px;
+  right: 0;
+  bottom: 0;
+}
+
+.tx-map-container .mapboxgl-map {
+  height: 100%;
+}
+
+/* Link */
+
+.tx-link {
+  text-decoration: underline;
+  color: #1473e6;
+  color: pointer;
+}

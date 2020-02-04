@@ -8,6 +8,10 @@
   text-align: center;
 }
 
+.tx-error {
+  color: red;
+}
+
 /* App */
 
 .tx-app {
@@ -37,6 +41,10 @@ header .tx-header-content {
 header .tx-menu {
   display: flex;
   align-items: center;
+}
+
+header .tx-menu a {
+  text-decoration: none;
 }
 
 header .tx-menu button {
@@ -111,4 +119,23 @@ header .tx-menu button:last-child {
   text-decoration: underline;
   color: #1473e6;
   color: pointer;
+}
+
+/* Card */
+
+.tx-card {
+  background: #ffffff;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  min-height: 200px;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.tx-card .tx-full .MuiTextField-root {
+  width: 100%;
+}
+
+.tx-card .tx-mclogo {
+  position: relative;
 }

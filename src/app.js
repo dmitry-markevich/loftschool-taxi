@@ -1,30 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PrivateRoute from './blocks/privateRoute/privateRoute';
+
 import './css/app.css';
-import { AuthProvider } from './blocks/auth/auth';
+
 import Header from './blocks/header/header';
 import LoginPage from './pages/login/login';
 import RegisterPage from './pages/register/register';
 import MapPage from './pages/map/map';
 import ProfilePage from './pages/profile/profile';
 
-const App = () => {
-  const [page, setPage] = useState('login');
-
+const App = ({ isAuthed }) => {
   return (
-    <AuthProvider>
-      <div className="tx-app">
-        <Header setPage={setPage} />
-        {
-          {
-            login: <LoginPage setPage={setPage} />,
-            register: <RegisterPage setPage={setPage} />,
-            map: <MapPage />,
-            profile: <ProfilePage />
-          }[page]
-        }
-      </div>
-    </AuthProvider>
+    <div className="tx-app">
+      <Header />
+      <Switch>
+        <Route path="/" component={LoginPage} exact />
+        <Route path="/register" component={RegisterPage} />
+        <PrivateRoute path="/map" component={MapPage} isAuthed={isAuthed} />
+        <PrivateRoute
+          path="/profile"
+          component={ProfilePage}
+          isAuthed={isAuthed}
+        />
+        <Redirect to="/" />
+      </Switch>
+    </div>
   );
 };
 
-export default App;
+const mapStateToProps = state => ({
+  isAuthed: state.user.isAuthed
+});
+
+export default connect(mapStateToProps)(App);

@@ -1,108 +1,111 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { AuthConsumer } from '../../blocks/auth/auth';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
+import { signInUser } from '../../modules/user';
+
 import Container from '@material-ui/core/container';
 import Grid from '@material-ui/core/grid';
 import TextField from '@material-ui/core/textfield';
 import Button from '@material-ui/core/button';
 import { Logo } from 'loft-taxi-mui-theme';
 
-class LoginPage extends React.Component {
-  state = { loginInput: '', passwordInput: '' };
+const LoginPage = ({ signInUser, isAuthed, error }) => {
+  const [loginInput, setLoginInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    const { loginInput, passwordInput } = this.state;
-    const { setPage } = this.props;
-
     if (loginInput && passwordInput) {
-      setPage('map');
+      signInUser({
+        email: loginInput,
+        password: passwordInput
+      });
     }
   };
 
-  handleChange = e => {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+  const handleChange = e => {
+    switch (e.target.name) {
+      case 'loginInput':
+        setLoginInput(e.target.value);
+        break;
+      case 'passwordInput':
+        setPasswordInput(e.target.value);
+        break;
+      default:
+    }
   };
 
-  render = () => {
-    const { loginInput, passwordInput } = this.state;
-    const { setPage } = this.props;
-
-    return (
-      <section className="tx-page tx-page-login">
-        <div className="tx-page-content">
-          <Container maxWidth="md">
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <div className="tx-logo-wr">
-                  <Logo />
-                </div>
-              </Grid>
-              <Grid item xs={6}>
-                <div className="tx-box">
-                  <h2>Войти</h2>
-                  <p>
-                    Новый пользователь?{' '}
-                    <span
-                      className="tx-link"
-                      onClick={() => setPage('register')}
-                    >
-                      Зарегистрируйтесь
-                    </span>
-                  </p>
-                  <form onSubmit={this.handleSubmit} className="tx-form">
-                    <div className="tx-line tx-single">
-                      <TextField
-                        label="Логин"
-                        type="email"
-                        name="loginInput"
-                        value={loginInput}
-                        onChange={this.handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="tx-line tx-single">
-                      <TextField
-                        label="Пароль"
-                        type="password"
-                        name="passwordInput"
-                        value={passwordInput}
-                        onChange={this.handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="tx-line ar">
-                      <AuthConsumer>
-                        {({ login }) => (
-                          <Button
-                            type="submit"
-                            onClick={() => {
-                              loginInput &&
-                                passwordInput &&
-                                login(loginInput, passwordInput);
-                            }}
-                          >
-                            Войти
-                          </Button>
-                        )}
-                      </AuthConsumer>
-                    </div>
-                  </form>
-                </div>
-              </Grid>
+  return (
+    <section className="tx-page tx-page-login">
+      <div className="tx-page-content">
+        <Container maxWidth="md">
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <div className="tx-logo-wr">
+                <Logo />
+              </div>
             </Grid>
-          </Container>
-        </div>
-      </section>
-    );
-  };
-}
-
-LoginPage.propTypes = {
-  setPage: PropTypes.func.isRequired
+            <Grid item xs={6}>
+              <div className="tx-box">
+                <h2>Войти</h2>
+                {isAuthed ? (
+                  <p>Добро пожаловать!</p>
+                ) : (
+                  <>
+                    <p>
+                      Новый пользователь?{' '}
+                      <Link to="/register" className="tx-link">
+                        Зарегистрируйтесь
+                      </Link>
+                    </p>
+                    <form onSubmit={handleSubmit} className="tx-form">
+                      <div className="tx-line tx-single">
+                        <TextField
+                          label="Логин"
+                          type="email"
+                          name="loginInput"
+                          value={loginInput}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="tx-line tx-single">
+                        <TextField
+                          label="Пароль"
+                          type="password"
+                          name="passwordInput"
+                          value={passwordInput}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="tx-line ar">
+                        <Button type="submit">Войти</Button>
+                      </div>
+                      <div className="tx-line">
+                        <span className="tx-error">{error}</span>
+                      </div>
+                    </form>
+                  </>
+                )}
+              </div>
+            </Grid>
+          </Grid>
+        </Container>
+      </div>
+    </section>
+  );
 };
 
-export default LoginPage;
+const mapStateToProps = state => ({
+  isAuthed: state.user.isAuthed,
+  error: state.user.error
+});
+
+const mapDispatchToProps = {
+  signInUser
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

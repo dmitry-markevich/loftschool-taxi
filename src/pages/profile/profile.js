@@ -3,15 +3,10 @@ import { connect } from 'react-redux';
 
 import { loadProfileUser, updateProfileUser } from '../../modules/user';
 
-import Grid from '@material-ui/core/grid';
-import Container from '@material-ui/core/container';
-import Button from '@material-ui/core/button';
-import TextField from '@material-ui/core/textfield';
+import { Grid, Container, Button, TextField } from '@material-ui/core';
 import { MCIcon } from 'loft-taxi-mui-theme';
 
 const ProfilePage = ({ loadProfileUser, updateProfileUser, card, error }) => {
-  console.log(card);
-
   const [cardInput, setCardInput] = useState(card.cardNumber);
   const [expiresInput, setExpiresInput] = useState(card.expiryDate);
   const [holderInput, setHolderInput] = useState(card.cardName);
@@ -23,8 +18,6 @@ const ProfilePage = ({ loadProfileUser, updateProfileUser, card, error }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-
-    console.log(cardInput, expiresInput, holderInput, cvcInput);
 
     if (cardInput && expiresInput && holderInput && cvcInput) {
       updateProfileUser({
@@ -131,7 +124,7 @@ const ProfilePage = ({ loadProfileUser, updateProfileUser, card, error }) => {
 
 const mapStateToProps = state => ({
   card: state.user.card,
-  error: state.user.error
+  error: state.user.errorProfile
 });
 
 const mapDispatchToProps = {

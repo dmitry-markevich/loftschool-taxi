@@ -101,7 +101,7 @@ const LoginPage = ({ signInUser, isAuthed, error }) => {
 
 const mapStateToProps = state => ({
   isAuthed: state.user.isAuthed,
-  error: state.user.error
+  error: state.user.errorSignIn
 });
 
 const mapDispatchToProps = {

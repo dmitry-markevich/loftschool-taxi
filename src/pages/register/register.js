@@ -129,7 +129,7 @@ const RegisterPage = ({ signUpUser, isAuthed, error }) => {
 
 const mapStateToProps = state => ({
   isAuthed: state.user.isAuthed,
-  error: state.user.error
+  error: state.user.errorSignUp
 });
 
 const mapDispatchToProps = {

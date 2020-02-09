@@ -139,3 +139,27 @@ header .tx-menu button:last-child {
 .tx-card .tx-mclogo {
   position: relative;
 }
+
+/* Route Editor */
+
+.tx-route-editor {
+  position: absolute;
+  left: 40px;
+  top: 105px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tx-route-editor .MuiInputLabel-root {
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.tx-route-editor .MuiInput-root {
+  width: 100%;
+}
+
+.tx-route-editor .MuiButton-text {
+  width: 100%;
+}

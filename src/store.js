@@ -1,24 +1,31 @@
 import { createStore, compose, applyMiddleware } from 'redux';
-import reducers from './modules';
-import {
-  signUserMiddleware,
-  loadProfileMiddleware,
-  updateProfileMiddleware
-} from './modules/user';
+import createSagaMiddleware from 'redux-saga';
 
-const initialState = sessionStorage.loftTaxi
+import { rootReducer } from './modules';
+import { rootSaga } from './modules';
+
+let initialState = {};
+
+// if (sessionStorage.loftTaxi) {
+//   const { isAuthed, token } = JSON.parse(sessionStorage.loftTaxi).user;
+//   initialState = { user: { isAuthed, token } };
+// }
+
+initialState = sessionStorage.loftTaxi
   ? JSON.parse(sessionStorage.loftTaxi)
   : {};
 
+const sagaMiddleware = createSagaMiddleware();
+
 export default createStore(
-  reducers,
+  rootReducer,
   initialState,
   compose(
-    applyMiddleware(signUserMiddleware),
-    applyMiddleware(loadProfileMiddleware),
-    applyMiddleware(updateProfileMiddleware),
+    applyMiddleware(sagaMiddleware),
     window.__REDUX_DEVTOOLS_EXTENSION__
       ? window.__REDUX_DEVTOOLS_EXTENSION__()
       : noop => noop
   )
 );
+
+sagaMiddleware.run(rootSaga);

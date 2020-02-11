@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/textfield';
 import Button from '@material-ui/core/button';
 import { Logo } from 'loft-taxi-mui-theme';
 
-const RegisterPage = ({ signUpUser, isAuthed, error }) => {
+const RegisterPage = ({ signUpUser, isAuthed, error, loading }) => {
   const [loginInput, setLoginInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [nameInput, setNameInput] = useState('');
@@ -110,7 +110,10 @@ const RegisterPage = ({ signUpUser, isAuthed, error }) => {
                         />
                       </div>
                       <div className="tx-line ar">
-                        <Button type="submit">Зарегистрироваться</Button>
+                        <Button type="submit">
+                          <span>Зарегистрироваться</span>
+                          {loading ? <span className="tx-loader"></span> : null}
+                        </Button>
                       </div>
                       <div className="tx-line">
                         <span className="tx-error">{error}</span>
@@ -129,7 +132,8 @@ const RegisterPage = ({ signUpUser, isAuthed, error }) => {
 
 const mapStateToProps = state => ({
   isAuthed: state.user.isAuthed,
-  error: state.user.errorSignUp
+  error: state.user.errorSignUp,
+  loading: state.user.loadingSignUp
 });
 
 const mapDispatchToProps = {

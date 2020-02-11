@@ -1,13 +1,11 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import * as actions from '../actions';
-
-const apiAddresses = token =>
-  fetch('https://loft-taxi.glitch.me/addressList').then(res => res.json());
+import { getAddresses } from '../../../api';
 
 export default function* watchAddresses() {
   yield takeLatest(actions.loadAddressesMap, function*(action) {
     try {
-      const result = yield call(apiAddresses);
+      const result = yield call(getAddresses);
       yield put(actions.loadAddressesMapSuccess(result));
     } catch (err) {
       yield put(actions.loadAddressesMapError(err));

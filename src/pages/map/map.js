@@ -2,89 +2,43 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { loadAddressesMap, getRouteMap } from '../../modules/map';
-
-import MapboxGl from 'mapbox-gl';
-import './mapbox-gl.css';
+import * as api from './api';
 
 import { Button, Select, InputLabel, MenuItem } from '@material-ui/core';
+import './mapbox-gl.css';
 
 const MapPage = () => {
   const mapContainer = useRef(null);
   const dispatch = useDispatch();
+
   const addresses = useSelector(state => state.map.addresses);
   const route = useSelector(state => state.map.route);
   const error = useSelector(state => state.map.mapError);
+  const loading = useSelector(state => state.map.mapLoading);
   const hasCard = useSelector(
     state => state.user.card.id !== undefined && state.user.card.id !== ''
   );
+
   const [map, setMap] = useState(null);
+  const [routeShown, setRouteShown] = useState(false);
+  const [routeSent, setRouteSent] = useState(false);
 
   useEffect(() => {
-    // Load Addresses
     dispatch(loadAddressesMap());
 
-    // Map
-    MapboxGl.accessToken =
-      'pk.eyJ1IjoibWR2ZG9wIiwiYSI6ImNrNXZpMnB0eDBxYnUza28wcHFmMXZnb2sifQ.dgrZA9kxtXmMQFpke8Li_Q';
+    const mapGL = api.createMap(mapContainer.current);
 
-    const map = new MapboxGl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v9',
-      center: [30.315868, 59.939095],
-      zoom: 9
-    });
-
-    map.on('load', () => {
-      setMap(map);
+    mapGL.on('load', () => {
+      setMap(mapGL);
     });
   }, []);
 
   useEffect(() => {
     if (map && route.length > 0) {
-      map.flyTo({
-        center: route[0],
-        zoom: 15
-      });
-
-      const layer = map.getLayer('route');
-
-      if (layer) {
-        map.getSource('route').setData({
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: route
-          }
-        });
-      } else {
-        map.addSource('route', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: route
-            }
-          }
-        });
-
-        map.addLayer({
-          id: 'route',
-          type: 'line',
-          source: 'route',
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          paint: {
-            'line-color': '#ffc617',
-            'line-width': 8
-          }
-        });
-      }
+      api.showRoute(map, route);
     }
+
+    if (routeSent) setRouteShown(true);
   }, [map, route]);
 
   const [address1, setAddress1] = useState('');
@@ -100,6 +54,7 @@ const MapPage = () => {
       setAddressError('Точки маршрута не должны совпадать');
     } else {
       setAddressError('');
+      setRouteSent(true);
       dispatch(getRouteMap({ address1, address2 }));
     }
   };
@@ -123,48 +78,60 @@ const MapPage = () => {
       </div>
       <div className="tx-route-editor tx-box">
         {hasCard ? (
-          <form onSubmit={handleSubmit} className="tx-form">
-            <div className="tx-line">
-              <InputLabel id="route-from-label">Откуда:</InputLabel>
-              <Select
-                name="address1"
-                value={address1}
-                onChange={handleChange}
-                labelId="route-from-label"
-              >
-                {addresses
-                  .filter(address => address !== address2)
-                  .map((address, i) => (
-                    <MenuItem key={i} value={address}>
-                      {address}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </div>
-            <div className="tx-line">
-              <InputLabel id="route-to-label">Куда:</InputLabel>
-              <Select
-                name="address2"
-                value={address2}
-                onChange={handleChange}
-                labelId="route-to-label"
-              >
-                {addresses
-                  .filter(address => address !== address1)
-                  .map((address, i) => (
-                    <MenuItem key={i} value={address}>
-                      {address}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </div>
-            <div className="tx-line">
-              <Button type="submit">Вызвать такси</Button>
-            </div>
-            <div className="tx-line">
-              <span className="tx-error">{addressError || error}</span>
-            </div>
-          </form>
+          routeShown ? (
+            <p>
+              Такси едет к вам.{' '}
+              <span onClick={() => setRouteShown(false)} className="tx-link">
+                Повторить заказ
+              </span>
+            </p>
+          ) : (
+            <form onSubmit={handleSubmit} className="tx-form">
+              <div className="tx-line">
+                <InputLabel id="route-from-label">Откуда:</InputLabel>
+                <Select
+                  name="address1"
+                  value={address1}
+                  onChange={handleChange}
+                  labelId="route-from-label"
+                >
+                  {addresses
+                    .filter(address => address !== address2)
+                    .map((address, i) => (
+                      <MenuItem key={i} value={address}>
+                        {address}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </div>
+              <div className="tx-line">
+                <InputLabel id="route-to-label">Куда:</InputLabel>
+                <Select
+                  name="address2"
+                  value={address2}
+                  onChange={handleChange}
+                  labelId="route-to-label"
+                >
+                  {addresses
+                    .filter(address => address !== address1)
+                    .map((address, i) => (
+                      <MenuItem key={i} value={address}>
+                        {address}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </div>
+              <div className="tx-line">
+                <Button type="submit">
+                  <span>Вызвать такси{loading}</span>
+                  {loading ? <span className="tx-loader"></span> : null}
+                </Button>
+              </div>
+              <div className="tx-line">
+                <span className="tx-error">{addressError || error}</span>
+              </div>
+            </form>
+          )
         ) : (
           <p>
             Для заказа такси необходимо заполнить{' '}

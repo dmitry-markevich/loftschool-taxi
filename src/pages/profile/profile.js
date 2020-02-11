@@ -6,7 +6,13 @@ import { loadProfileUser, updateProfileUser } from '../../modules/user';
 import { Grid, Container, Button, TextField } from '@material-ui/core';
 import { MCIcon } from 'loft-taxi-mui-theme';
 
-const ProfilePage = ({ loadProfileUser, updateProfileUser, card, error }) => {
+const ProfilePage = ({
+  loadProfileUser,
+  updateProfileUser,
+  card,
+  error,
+  loading
+}) => {
   const [cardInput, setCardInput] = useState(card.cardNumber);
   const [expiresInput, setExpiresInput] = useState(card.expiryDate);
   const [holderInput, setHolderInput] = useState(card.cardName);
@@ -109,7 +115,10 @@ const ProfilePage = ({ loadProfileUser, updateProfileUser, card, error }) => {
                 </Grid>
               </Grid>
               <div className="tx-line ac">
-                <Button type="submit">Сохранить</Button>
+                <Button type="submit">
+                  <span>Сохранить</span>
+                  {loading ? <span className="tx-loader"></span> : null}
+                </Button>
               </div>
               <div className="tx-line">
                 <span className="tx-error">{error}</span>
@@ -124,7 +133,8 @@ const ProfilePage = ({ loadProfileUser, updateProfileUser, card, error }) => {
 
 const mapStateToProps = state => ({
   card: state.user.card,
-  error: state.user.errorProfile
+  error: state.user.errorProfile,
+  loading: state.user.loadingProfile
 });
 
 const mapDispatchToProps = {

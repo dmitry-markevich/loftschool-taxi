@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/textfield';
 import Button from '@material-ui/core/button';
 import { Logo } from 'loft-taxi-mui-theme';
 
-const LoginPage = ({ signInUser, isAuthed, error }) => {
+const LoginPage = ({ signInUser, isAuthed, error, loading }) => {
   const [loginInput, setLoginInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
 
@@ -82,7 +82,10 @@ const LoginPage = ({ signInUser, isAuthed, error }) => {
                         />
                       </div>
                       <div className="tx-line ar">
-                        <Button type="submit">Войти</Button>
+                        <Button type="submit">
+                          <span>Войти</span>
+                          {loading ? <span className="tx-loader"></span> : null}
+                        </Button>
                       </div>
                       <div className="tx-line">
                         <span className="tx-error">{error}</span>
@@ -101,7 +104,8 @@ const LoginPage = ({ signInUser, isAuthed, error }) => {
 
 const mapStateToProps = state => ({
   isAuthed: state.user.isAuthed,
-  error: state.user.errorSignIn
+  error: state.user.errorSignIn,
+  loading: state.user.loadingSignIn
 });
 
 const mapDispatchToProps = {

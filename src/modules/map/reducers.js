@@ -31,8 +31,18 @@ const mapError = handleActions(
   ''
 );
 
+const mapLoading = handleActions(
+  {
+    [actions.getRouteMap]: () => true,
+    [actions.getRouteMapSuccess]: () => false,
+    [actions.getRouteMapError]: () => false
+  },
+  false
+);
+
 export default combineReducers({
   addresses,
   route,
-  mapError
+  mapError,
+  mapLoading
 });

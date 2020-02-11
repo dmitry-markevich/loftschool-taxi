@@ -7,26 +7,13 @@ import {
   updateProfileUserSuccess,
   updateProfileUserError
 } from '../actions';
-
-const apiCardLoad = token =>
-  fetch('https://loft-taxi.glitch.me/card?token=' + token).then(res =>
-    res.json()
-  );
-
-const apiCardUpdate = data =>
-  fetch('https://loft-taxi.glitch.me/card', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  }).then(res => res.json());
+import { loadCard, updateCard } from '../../../api';
 
 export default function* watchProfile() {
   yield takeLatest(loadProfileUser, function*(action) {
     try {
       const token = yield select(state => state.user.token);
-      const result = yield call(apiCardLoad, token);
+      const result = yield call(loadCard, token);
       yield put(loadProfileUserSuccess(result));
     } catch (err) {
       yield put(loadProfileUserError(err));
@@ -36,7 +23,7 @@ export default function* watchProfile() {
   yield takeLatest(updateProfileUser, function*(action) {
     try {
       const token = yield select(state => state.user.token);
-      const result = yield call(apiCardUpdate, { ...action.payload, token });
+      const result = yield call(updateCard, { ...action.payload, token });
       yield put(updateProfileUserSuccess(result));
       yield put(loadProfileUser());
     } catch (err) {

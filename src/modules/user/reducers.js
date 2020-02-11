@@ -34,6 +34,13 @@ const token = handleActions(
   null
 );
 
+const card = handleActions(
+  {
+    [loadProfileUserSuccess]: (_state, action) => action.payload
+  },
+  {}
+);
+
 const errorSignUp = handleActions(
   {
     [signUpUser]: () => '',
@@ -68,11 +75,31 @@ const errorProfile = handleActions(
   ''
 );
 
-const card = handleActions(
+const loadingSignUp = handleActions(
   {
-    [loadProfileUserSuccess]: (_state, action) => action.payload
+    [signUpUser]: () => true,
+    [signUpUserSuccess]: () => false,
+    [signUpUserError]: () => false
   },
-  {}
+  false
+);
+
+const loadingSignIn = handleActions(
+  {
+    [signInUser]: () => true,
+    [signInUserSuccess]: () => false,
+    [signInUserError]: () => false
+  },
+  false
+);
+
+const loadingProfile = handleActions(
+  {
+    [loadProfileUser]: () => true,
+    [loadProfileUserSuccess]: () => false,
+    [loadProfileUserError]: () => false
+  },
+  false
 );
 
 export default combineReducers({
@@ -81,5 +108,8 @@ export default combineReducers({
   card,
   errorSignUp,
   errorSignIn,
-  errorProfile
+  errorProfile,
+  loadingSignUp,
+  loadingSignIn,
+  loadingProfile
 });

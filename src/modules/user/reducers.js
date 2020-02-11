@@ -34,16 +34,28 @@ const token = handleActions(
   null
 );
 
-const error = handleActions(
+const errorSignUp = handleActions(
   {
     [signUpUser]: () => '',
     [signUpUserSuccess]: (_state, action) => action.payload.error,
     [signUpUserError]: (_state, action) =>
-      action.payload.statusText || 'Connection error',
+      action.payload.statusText || 'Connection error'
+  },
+  ''
+);
+
+const errorSignIn = handleActions(
+  {
     [signInUser]: () => '',
     [signInUserSuccess]: (_state, action) => action.payload.error,
     [signInUserError]: (_state, action) =>
-      action.payload.statusText || 'Connection error',
+      action.payload.statusText || 'Connection error'
+  },
+  ''
+);
+
+const errorProfile = handleActions(
+  {
     [updateProfileUser]: () => '',
     [updateProfileUserSuccess]: (_state, action) => action.payload.error,
     [updateProfileUserError]: (_state, action) =>
@@ -67,5 +79,7 @@ export default combineReducers({
   isAuthed,
   token,
   card,
-  error
+  errorSignUp,
+  errorSignIn,
+  errorProfile
 });

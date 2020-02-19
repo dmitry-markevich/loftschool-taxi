@@ -118,7 +118,7 @@ header .tx-menu button:last-child {
 .tx-link {
   text-decoration: underline;
   color: #1473e6;
-  color: pointer;
+  cursor: pointer;
 }
 
 /* Card */
@@ -191,4 +191,11 @@ header .tx-menu button:last-child {
   to {
     transform: rotateZ(360deg);
   }
+}
+
+/* Form Errors */
+
+.tx-form-err {
+  font-size: 0.7em;
+  color: #f26d7d;
 }

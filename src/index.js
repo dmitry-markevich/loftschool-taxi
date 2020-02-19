@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
-import store from './store';
+import initStore from './store';
 import App from './app';
 
 import './css/index.css';
 import { theme } from 'loft-taxi-mui-theme';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+
+const store = initStore();
 
 store.subscribe(() => {
   const state = store.getState();
@@ -16,12 +18,12 @@ store.subscribe(() => {
 });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
+  <BrowserRouter>
+    <Provider store={store}>
       <MuiThemeProvider theme={theme}>
         <App />
       </MuiThemeProvider>
-    </BrowserRouter>
-  </Provider>,
+    </Provider>{' '}
+  </BrowserRouter>,
   document.getElementById('root')
 );

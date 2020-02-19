@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { loadProfileUser, updateProfileUser } from '../../modules/user';
 
@@ -13,45 +15,44 @@ const ProfilePage = ({
   error,
   loading
 }) => {
-  const [cardInput, setCardInput] = useState(card.cardNumber);
-  const [expiresInput, setExpiresInput] = useState(card.expiryDate);
-  const [holderInput, setHolderInput] = useState(card.cardName);
-  const [cvcInput, setCvcInput] = useState(card.cvc);
-
   useEffect(() => {
     loadProfileUser();
   }, []);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    if (cardInput && expiresInput && holderInput && cvcInput) {
-      updateProfileUser({
-        cardNumber: cardInput,
-        expiryDate: expiresInput,
-        cardName: holderInput,
-        cvc: cvcInput
-      });
-    }
+  const handleForm = ({ cardInput, expiresInput, holderInput, cvcInput }) => {
+    updateProfileUser({
+      cardNumber: cardInput,
+      expiryDate: expiresInput,
+      cardName: holderInput,
+      cvc: cvcInput
+    });
   };
 
-  const handleChange = e => {
-    switch (e.target.name) {
-      case 'cardInput':
-        setCardInput(e.target.value);
-        break;
-      case 'expiresInput':
-        setExpiresInput(e.target.value);
-        break;
-      case 'holderInput':
-        setHolderInput(e.target.value);
-        break;
-      case 'cvcInput':
-        setCvcInput(e.target.value);
-        break;
-      default:
+  const profileSchema = yup.object().shape({
+    cardInput: yup
+      .string()
+      .matches(/^(\d{4} ){3}\d{4}$/, 'Пример: 1234 5678 1234 5678')
+      .required('Поле обязательно'),
+    expiresInput: yup
+      .string()
+      .matches(/^\d{2}\/\d{2}$/, 'Пример: 01/20')
+      .required('Поле обязательно'),
+    holderInput: yup.string().required('Поле обязательно'),
+    cvcInput: yup
+      .string()
+      .matches(/^\d{3}$/, 'Пример: 123')
+      .required('Поле обязательно')
+  });
+
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: profileSchema,
+    defaultValues: {
+      cardInput: card.cardNumber,
+      expiresInput: card.expiryDate,
+      holderInput: card.cardName,
+      cvcInput: card.cvc
     }
-  };
+  });
 
   return (
     <section className="tx-page tx-page-profile">
@@ -60,7 +61,11 @@ const ProfilePage = ({
           <div className="tx-box">
             <h2 className="ac">Профиль</h2>
             <p className="ac">Способ оплаты</p>
-            <form onSubmit={handleSubmit} className="tx-form">
+            <form
+              onSubmit={handleSubmit(handleForm)}
+              className="tx-form"
+              data-testid="profile-form"
+            >
               <Grid container spacing={3}>
                 <Grid item xs={6}>
                   <div className="tx-card">
@@ -72,9 +77,14 @@ const ProfilePage = ({
                         label="Номер карты"
                         type="text"
                         name="cardInput"
-                        value={cardInput}
-                        onChange={handleChange}
-                        required
+                        inputRef={register}
+                        error={!!errors.cardInput}
+                        helperText={
+                          errors.cardInput && errors.cardInput.message
+                        }
+                        inputProps={{
+                          'data-testid': 'profile-input'
+                        }}
                       />
                     </div>
                     <div className="tx-line">
@@ -82,9 +92,11 @@ const ProfilePage = ({
                         label="Срок действия"
                         type="text"
                         name="expiresInput"
-                        value={expiresInput}
-                        onChange={handleChange}
-                        required
+                        inputRef={register}
+                        error={!!errors.expiresInput}
+                        helperText={
+                          errors.expiresInput && errors.expiresInput.message
+                        }
                       />
                     </div>
                   </div>
@@ -96,9 +108,11 @@ const ProfilePage = ({
                         label="Имя владельца"
                         type="text"
                         name="holderInput"
-                        value={holderInput}
-                        onChange={handleChange}
-                        required
+                        inputRef={register}
+                        error={!!errors.holderInput}
+                        helperText={
+                          errors.holderInput && errors.holderInput.message
+                        }
                       />
                     </div>
                     <div className="tx-line">
@@ -106,16 +120,16 @@ const ProfilePage = ({
                         label="CVC"
                         type="text"
                         name="cvcInput"
-                        value={cvcInput}
-                        onChange={handleChange}
-                        required
+                        inputRef={register}
+                        error={!!errors.cvcInput}
+                        helperText={errors.cvcInput && errors.cvcInput.message}
                       />
                     </div>
                   </div>
                 </Grid>
               </Grid>
               <div className="tx-line ac">
-                <Button type="submit">
+                <Button type="submit" data-testid="profile-submit">
                   <span>Сохранить</span>
                   {loading ? <span className="tx-loader"></span> : null}
                 </Button>

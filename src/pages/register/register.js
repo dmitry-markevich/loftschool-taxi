@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { signUpUser } from '../../modules/user';
 
@@ -11,41 +13,33 @@ import Button from '@material-ui/core/button';
 import { Logo } from 'loft-taxi-mui-theme';
 
 const RegisterPage = ({ signUpUser, isAuthed, error, loading }) => {
-  const [loginInput, setLoginInput] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
-  const [nameInput, setNameInput] = useState('');
-  const [surnameInput, setSurnameInput] = useState('');
-
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    if (loginInput && passwordInput) {
-      signUpUser({
-        email: loginInput,
-        password: passwordInput,
-        name: nameInput,
-        surname: surnameInput
-      });
-    }
+  const handleForm = ({
+    loginInput,
+    passwordInput,
+    nameInput,
+    surnameInput
+  }) => {
+    signUpUser({
+      email: loginInput,
+      password: passwordInput,
+      name: nameInput,
+      surname: surnameInput
+    });
   };
 
-  const handleChange = e => {
-    switch (e.target.name) {
-      case 'loginInput':
-        setLoginInput(e.target.value);
-        break;
-      case 'passwordInput':
-        setPasswordInput(e.target.value);
-        break;
-      case 'nameInput':
-        setNameInput(e.target.value);
-        break;
-      case 'surnameInput':
-        setSurnameInput(e.target.value);
-        break;
-      default:
-    }
-  };
+  const signUpSchema = yup.object().shape({
+    loginInput: yup
+      .string()
+      .email('Необходимо ввести корректный email')
+      .required('Поле обязательно'),
+    passwordInput: yup.string().required('Поле обязательно'),
+    nameInput: yup.string().required('Поле обязательно'),
+    surnameInput: yup.string().required('Поле обязательно')
+  });
+
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: signUpSchema
+  });
 
   return (
     <section className="tx-page tx-page-login">
@@ -70,15 +64,24 @@ const RegisterPage = ({ signUpUser, isAuthed, error, loading }) => {
                         Войти
                       </Link>
                     </p>
-                    <form onSubmit={handleSubmit} className="tx-form">
+                    <form
+                      onSubmit={handleSubmit(handleForm)}
+                      className="tx-form"
+                      data-testid="register-form"
+                    >
                       <div className="tx-line tx-single">
                         <TextField
                           label="Электронная почта"
-                          type="email"
+                          type="text"
                           name="loginInput"
-                          value={loginInput}
-                          onChange={handleChange}
-                          required
+                          inputRef={register}
+                          error={!!errors.loginInput}
+                          helperText={
+                            errors.loginInput && errors.loginInput.message
+                          }
+                          inputProps={{
+                            'data-testid': 'register-input'
+                          }}
                         />
                       </div>
                       <div className="tx-line">
@@ -86,17 +89,21 @@ const RegisterPage = ({ signUpUser, isAuthed, error, loading }) => {
                           label="Имя"
                           type="text"
                           name="nameInput"
-                          value={nameInput}
-                          onChange={handleChange}
-                          required
+                          inputRef={register}
+                          error={!!errors.nameInput}
+                          helperText={
+                            errors.nameInput && errors.nameInput.message
+                          }
                         />
                         <TextField
                           label="Фамилия"
                           type="text"
                           name="surnameInput"
-                          value={surnameInput}
-                          onChange={handleChange}
-                          required
+                          inputRef={register}
+                          error={!!errors.surnameInput}
+                          helperText={
+                            errors.surnameInput && errors.surnameInput.message
+                          }
                         />
                       </div>
                       <div className="tx-line tx-single">
@@ -104,13 +111,15 @@ const RegisterPage = ({ signUpUser, isAuthed, error, loading }) => {
                           label="Пароль"
                           type="password"
                           name="passwordInput"
-                          value={passwordInput}
-                          onChange={handleChange}
-                          required
+                          inputRef={register}
+                          error={!!errors.passwordInput}
+                          helperText={
+                            errors.passwordInput && errors.passwordInput.message
+                          }
                         />
                       </div>
                       <div className="tx-line ar">
-                        <Button type="submit">
+                        <Button type="submit" data-testid="register-submit">
                           <span>Зарегистрироваться</span>
                           {loading ? <span className="tx-loader"></span> : null}
                         </Button>

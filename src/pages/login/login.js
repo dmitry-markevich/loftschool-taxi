@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { signInUser } from '../../modules/user';
 
@@ -11,31 +13,24 @@ import Button from '@material-ui/core/button';
 import { Logo } from 'loft-taxi-mui-theme';
 
 const LoginPage = ({ signInUser, isAuthed, error, loading }) => {
-  const [loginInput, setLoginInput] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
-
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    if (loginInput && passwordInput) {
-      signInUser({
-        email: loginInput,
-        password: passwordInput
-      });
-    }
+  const handleForm = ({ loginInput, passwordInput }) => {
+    signInUser({
+      email: loginInput,
+      password: passwordInput
+    });
   };
 
-  const handleChange = e => {
-    switch (e.target.name) {
-      case 'loginInput':
-        setLoginInput(e.target.value);
-        break;
-      case 'passwordInput':
-        setPasswordInput(e.target.value);
-        break;
-      default:
-    }
-  };
+  const signInSchema = yup.object().shape({
+    loginInput: yup
+      .string()
+      .email('Необходимо ввести корректный email')
+      .required('Поле обязательно'),
+    passwordInput: yup.string().required('Поле обязательно')
+  });
+
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: signInSchema
+  });
 
   return (
     <section className="tx-page tx-page-login">
@@ -60,15 +55,24 @@ const LoginPage = ({ signInUser, isAuthed, error, loading }) => {
                         Зарегистрируйтесь
                       </Link>
                     </p>
-                    <form onSubmit={handleSubmit} className="tx-form">
+                    <form
+                      onSubmit={handleSubmit(handleForm)}
+                      className="tx-form"
+                      data-testid="login-form"
+                    >
                       <div className="tx-line tx-single">
                         <TextField
                           label="Логин"
-                          type="email"
+                          type="text"
                           name="loginInput"
-                          value={loginInput}
-                          onChange={handleChange}
-                          required
+                          inputRef={register}
+                          error={!!errors.loginInput}
+                          helperText={
+                            errors.loginInput && errors.loginInput.message
+                          }
+                          inputProps={{
+                            'data-testid': 'login-input'
+                          }}
                         />
                       </div>
                       <div className="tx-line tx-single">
@@ -76,13 +80,15 @@ const LoginPage = ({ signInUser, isAuthed, error, loading }) => {
                           label="Пароль"
                           type="password"
                           name="passwordInput"
-                          value={passwordInput}
-                          onChange={handleChange}
-                          required
+                          inputRef={register}
+                          error={!!errors.passwordInput}
+                          helperText={
+                            errors.passwordInput && errors.passwordInput.message
+                          }
                         />
                       </div>
                       <div className="tx-line ar">
-                        <Button type="submit">
+                        <Button type="submit" data-testid="login-submit">
                           <span>Войти</span>
                           {loading ? <span className="tx-loader"></span> : null}
                         </Button>
